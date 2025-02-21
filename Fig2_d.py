@@ -8,9 +8,6 @@ Results are saved as PDF files for further analysis.
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import fmin, fixed_point, root, minimize
-import math
-from matplotlib import cm
 
 # Configure LaTeX-style plotting
 plt.rc('text', usetex=True)
@@ -36,7 +33,7 @@ gammas = -np.linspace(0, 1.5, B)  # Range of gamma values
 gammas[0] = 0.0  # Ensure first gamma is zero
 
 # Define colormap for plotting
-cmap = cm.get_cmap('plasma_r')
+cmap = plt.get_cmap('plasma_r')
 colors = [cmap(i / (B - 1)) for i in range(B)]
 
 # Create first figure for magnetization dynamics

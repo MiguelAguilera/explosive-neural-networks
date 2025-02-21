@@ -68,7 +68,7 @@ fig.tight_layout()
 fig.subplots_adjust(top=1.4, bottom=-0.3, left=-0.0, right=0.85)
 
 # Save figure
-plt.savefig('img/deformation.pdf')
+plt.savefig('img/Fig2_c.pdf')
 
 # Display plot
 plt.show()

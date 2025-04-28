@@ -2,12 +2,13 @@
 GPLv3 2025 Miguel Aguilera
 
 This code solves the self-consistent equation for magnetization in a homogeneous explosive neural network.
-Results are plotted and saved as compressed numpy data files.
+Results are computed iteratively and plotted along with their derivative.
+Final data is saved as compressed numpy files for further analysis.
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import root
+from numba import njit
 
 # Configure LaTeX-style plotting
 plt.rc('text', usetex=True)
@@ -16,41 +17,60 @@ plt.rc('font', **font)
 plt.rc('legend', fontsize=16)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
-# Define the equation whose roots we are solving
-def equations(m):
+# Define parameters
+B = 100001  # Number of beta values to evaluate
+betas = np.linspace(0, 30, B)  # Range of beta values
+
+dt = 0.04  # Time step for integration
+
+# Function to compute the equilibrium magnetization for each beta
+@njit
+def calculate_m(betas):
     """
-    Self-consistent equation for magnetization m.
+    Computes the equilibrium magnetization (m) for each beta value using an iterative method.
+    The system evolves dynamically until convergence.
+    
+    Args:
+        betas (numpy array): Array of beta values to evaluate.
+    
+    Returns:
+        numpy array: Array of magnetization values for each beta.
     """
-    return np.tanh(beta * m) - m
+    M = np.zeros(B)  # Storage for magnetization values
+    
+    # Iterate over beta values in reverse order
+    for ib in range(len(betas) - 1, -1, -1):
+        beta = np.round(betas[ib], 6)  # Ensure numerical precision
+        
+        if ib > 0:
+            if beta <= 1:
+                M[ib] = 0  # Below critical beta, magnetization is zero
+            else:
+                error = 1.0  # Initialize error for convergence check
+                m = 0.9  # Initial guess for magnetization
+                
+                # Iterative update until convergence
+                while error > 1E-8:
+                    dm = -m + np.tanh(beta * m)  # Compute update step
+                    m += dt * dm  # Apply update
+                    error = np.abs(dm)  # Check convergence condition
+                
+                M[ib] = m  # Store the computed magnetization
+        
+        print(ib, beta, M[ib])  # Output progress
+    
+    return M
 
-# Define range for beta values
-B = 100001  # Number of beta values
-betas = np.linspace(0, 30, B)
-
-# Arrays to store results
-m = np.zeros(B)
-dm = np.zeros(B)
-
-m0 = 0.9  # Initial guess for magnetization
-
-# Compute magnetization for each beta
-for ib, beta in reversed(list(enumerate(betas))):
-    beta = np.round(beta, 6)
-    if ib > 0:
-        if beta <= 1:
-            m[ib] = 0
-        else:
-            res1 = root(equations, m0, method='lm')
-            m[ib] = res1.x[0]
-    print(ib, beta, m[ib])
+# Compute magnetization values
+m = calculate_m(betas)
 
 # Compute derivative dm/dβ
 dm = np.gradient(m, betas)
 
 # Create figure with two subplots
 fig, ax = plt.subplots(1, 2, figsize=(8, 3))
-ax[0].plot(betas, m, 'k')
-ax[1].plot(betas, dm, 'k')
+ax[0].plot(betas, m, 'k', label='Magnetization')
+ax[1].plot(betas, dm, 'k', label='Derivative')
 
 # Set labels and axes limits
 ax[0].set_ylabel(r'$m$', rotation=0, labelpad=16)
@@ -64,10 +84,10 @@ ax[1].axis([betas[0], np.max(betas), 0, 2.5])
 plt.subplots_adjust(wspace=0.02, hspace=0.02)
 fig.tight_layout(h_pad=0.0, w_pad=0.7, rect=[0, 0, 1, 0.975])
 
-# Save data
-filename = 'data/magnetization.npz'
+# Save computed data
+filename = 'data/Fig2_c.npz'
 np.savez_compressed(filename, betas=betas, m=m)
 
-# Show plot
+# Show the plot
 plt.show()
 

@@ -1,8 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This script simulates a memory retrieval model using the CIFAR dataset and the Glauber algorithm.
-It explores the effect of synaptic scaling (gamma) on memory capacity.
 """
 
 import numpy as np
@@ -150,7 +147,7 @@ def calculate_overlap(gamma, beta, M, xi0, inds_cifar):
     s = SequentialGlauberStep(s, np.zeros(N), J, beta, gamma, xi, T)
 
     # Compute overlap
-    return np.dot(xi, s) / N
+    return np.dot(xi[0, :], s) / N
 
 
 # ======================

@@ -1,9 +1,6 @@
 """
 GPLv3 2025 Miguel Aguilera
 
-This code generates a 3D plot of the magnetization equation with deformation analysis.
-It loads precomputed magnetization data and visualizes the transformed beta values.
-The results are plotted and saved as a PDF file.
 """
 
 import numpy as np

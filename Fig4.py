@@ -1,3 +1,7 @@
+"""
+GPLv3 2025 Miguel Aguilera
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from numba import njit

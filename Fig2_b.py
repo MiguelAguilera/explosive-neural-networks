@@ -1,9 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This code computes and plots the phase diagram of a magnetization model.
-It iteratively solves for gamma values as a function of beta, identifying the transition points.
-The results are visualized in a phase diagram and saved as a PDF file.
 """
 
 import numpy as np

@@ -1,3 +1,7 @@
+"""
+GPLv3 2025 Miguel Aguilera
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -64,7 +68,7 @@ for gamma in [-0.8, -1.0, -1.2]:
     ax[1].set_ylabel(r'$\dfrac{dq}{d\beta}$', rotation=0, labelpad=16)
     ax[1].set_xlabel(r'$\beta$')
     ax[1].axis([beta0[0], 1.2, 0, 8])
-    ax[1].yaxis.set_label_coords(-0.2, 0.3)
+    ax[1].yaxis.set_label_coords(-0.2, 0.3)depicted in Fig.
 
     # Save figure and adjust layout
     plt.subplots_adjust(wspace=0.2)

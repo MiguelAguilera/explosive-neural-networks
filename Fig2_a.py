@@ -1,9 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This code solves the self-consistent equation for magnetization in a homogeneous explosive neural network.
-It evaluates the equation for different values of beta and gamma, identifying roots where the function changes sign.
-Results are plotted and saved as PDF files.
 """
 
 import numpy as np

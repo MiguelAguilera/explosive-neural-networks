@@ -1,12 +1,6 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This script visualizes the phase transition in a coupled magnetization system.
-It loads computed magnetization data and plots the transition behavior under different conditions.
-The results are saved as PDF files for further analysis.
 """
-
-#!/usr/bin/env python
 
 import numpy as np
 from matplotlib import pyplot as plt

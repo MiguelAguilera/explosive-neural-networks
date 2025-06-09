@@ -1,57 +1,54 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-# Configure LaTeX-style plotting for better readability
+# --- Configure LaTeX-style plotting for consistent formatting ---
 plt.rc('text', usetex=True)
-font = {'size': 20, 'family': 'serif', 'serif': ['latin modern roman']}
-plt.rc('font', **font)
-plt.rc('legend', **{'fontsize': 18})
+plt.rc('font', size=20, family='serif', serif=['latin modern roman'])
+plt.rc('legend', fontsize=18)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
-# Define gamma values for analysis
+# === PART 1: GAMMA-DEPENDENT ANALYSIS AND PLOTTING ===
 for gamma in [-0.8, -1.0, -1.2]:
-    
-    # Load data from file
-    filename = 'data/Fig6.npz'
-    data = np.load(filename)
+    # Load original data
+    data = np.load('data/Fig6.npz')
     betas = data['betas']
     q = data['q']
-    
-    # Compute the modified beta values with gamma correction
+
+    # Compute transformed inverse temperature with gamma correction
     beta0 = betas * (1 + gamma * (betas * (1 - q**2) / 2))
-    
-    # Identify regions where beta0 is increasing
+
+    # Identify regions where beta0 is increasing (i.e., stability criterion)
     increasing_inds = np.gradient(beta0, betas) > 0
-    q1 = q.copy()
-    
-    # Compute the derivative dq/d(beta0)
-    dq = np.gradient(q, beta0)
-    
-    # Mask invalid values for visualization
-    q[~increasing_inds] = np.nan
-    q1[increasing_inds] = np.nan
-    dq[~increasing_inds] = np.nan
-    dq[q < 1E-7] = np.nan
-    dq[dq <= 0] = np.nan
-    
-    # Identify critical transition point
+
+    # Prepare q and derivative arrays
+    q1 = q.copy()  # Backup original q
+    dq = np.gradient(q, beta0)  # Derivative of q w.r.t. beta0
+
+    # Apply masks to highlight stable regions
+    q[~increasing_inds] = np.nan      # Unstable: mask q
+    q1[increasing_inds] = np.nan      # Stable: mask in backup for dotted line
+    dq[~increasing_inds] = np.nan     # Mask unstable dq
+    dq[q < 1E-7] = np.nan             # Mask near-zero overlap
+    dq[dq <= 0] = np.nan              # Only consider increasing regions
+
+    # Identify transition point: sharpest increase in q
     imax = np.nanargmax(dq)
-    dq[:imax] = np.nan
+    dq[:imax] = np.nan  # Mask values before maximum
     transition_inds = np.where(dq > 5)[0]
     if len(transition_inds):
-        dq[transition_inds[0] - 1] = np.nan
-    
-    # Compute beta derivative
+        dq[transition_inds[0] - 1] = np.nan  # Smooth visualization
+
+    # Compute derivative of beta0 for diagnostics
     Db0 = np.gradient(beta0, betas)
-    
-    # Find valid transition points
+
+    # Get valid transition index for vertical line
     valid_inds = np.where(~np.isnan(dq))[0]
     print(valid_inds)
-    
-    # Create subplots
+
+    # === Plot results for current gamma ===
     fig, ax = plt.subplots(1, 2, figsize=(8, 3))
     fig.suptitle(fr"$\gamma' = {gamma}$", y=0.85)
-    
+
     # Plot q vs beta0
     ax[0].plot(beta0, q, 'k')
     ax[0].plot(beta0, q1, 'k:')
@@ -59,8 +56,8 @@ for gamma in [-0.8, -1.0, -1.2]:
     ax[0].set_xlabel(r'$\beta$')
     ax[0].axis([beta0[0], 1.2, 0, 1])
     ax[0].yaxis.set_label_coords(-0.18, 0.45)
-    
-    # Plot dq/d(beta0) vs beta0
+
+    # Plot dq/dbeta0 vs beta0
     ax[1].plot(beta0, dq, 'k')
     if len(valid_inds):
         ax[1].plot(beta0[valid_inds[0] - 1:valid_inds[0] + 1], [0, dq[valid_inds[0]]], 'k:')
@@ -68,60 +65,57 @@ for gamma in [-0.8, -1.0, -1.2]:
     ax[1].set_xlabel(r'$\beta$')
     ax[1].axis([beta0[0], 1.2, 0, 8])
     ax[1].yaxis.set_label_coords(-0.2, 0.3)
-    
-    # Adjust layout and save figure
-    plt.subplots_adjust(wspace=0.2, hspace=0.02)
+
+    # Save figure and adjust layout
+    plt.subplots_adjust(wspace=0.2)
     fig.tight_layout(h_pad=0.0, w_pad=0.7, rect=[0, 0, 1, 0.975])
     plt.savefig(f'img/Fig6_gamma_{gamma}.pdf', bbox_inches='tight')
 
-# Reset plotting parameters
+# === PART 2: PHASE DIAGRAM ANALYSIS ===
+
+# Reset plotting configuration for general use
 plt.rc('text', usetex=True)
-plt.rc('font', **{'size': 16})
-plt.rc('legend', **{'fontsize': 16})
+plt.rc('font', size=16)
+plt.rc('legend', fontsize=16)
 plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
-# Load data again for phase diagram
-filename = 'data/Fig6.npz'
-data = np.load(filename)
+# Reload base data
+data = np.load('data/Fig6.npz')
 betas = data['betas']
 q = data['q']
 
-# Define gamma range for analysis
+# Define range of gamma values (negative only)
 G = 1000
-gammas = -np.linspace(1.0, 1.25, G + 1)[1:]  # Exclude first value to avoid singularities
+gammas = -np.linspace(1.0, 1.25, G + 1)[1:]  # Avoid exact -1.0 to prevent numerical issues
+b = np.zeros(G)  # Store critical beta values
 
-# Initialize array to store critical beta values
-b = np.zeros(G)
-
-# Compute stability transition points for different gamma values
-for i, gamma in enumerate(gammas[1:]):  
+# Find beta0 at last decreasing point (end of stability)
+for i, gamma in enumerate(gammas[1:]):
     beta0 = betas * (1 + gamma * (betas * (1 - q**2) / 2))
-    ind = np.where(np.gradient(beta0, betas) < 0)[0][-1]  # Find last decreasing index
-    b[i] = beta0[ind]  # Store corresponding beta value
+    ind = np.where(np.gradient(beta0, betas) < 0)[0][-1]
+    b[i] = beta0[ind]
 
-# Generate analytical phase boundary curve
+# Analytical prediction of boundary: beta = gamma/2 + 1
 N = 1000
-gamma = np.linspace(0, -2, N)  # Define gamma values
-beta = gamma / 2 + 1  # Compute beta from gamma
+gamma = np.linspace(0, -2, N)
+beta = gamma / 2 + 1
 
-# Create phase diagram
+# === Plot phase diagram ===
 plt.figure(figsize=(6, 4))
-plt.plot(b, gammas, 'k', label="Computed transition line")  # Computed transition line
-plt.plot(beta, gamma, 'k', label="Analytical boundary")  # Analytical boundary
+plt.plot(b, gammas, 'k', label="Computed transition line")
+plt.plot(beta, gamma, 'k', label="Analytical boundary")
 
-# Set axis limits
+# Set plot limits and annotate phase regions
 plt.axis([0, 0.8, -0.9, -1.25])
+plt.text(0.2, -1.05, r'P', size=25)     # Paramagnetic
+plt.text(0.6, -1.05, r'SG', size=25)    # Spin glass
+plt.text(0.25, -1.21, r'Exp', size=25)  # Expansion region
 
-# Label different phase regions
-plt.text(0.2, -1.05, r'P', size=25)    # Paramagnetic phase
-plt.text(0.6, -1.05, r'SG', size=25)   # Spin-glass phase
-plt.text(0.25, -1.21, r'Exp', size=25) # Expanding region
-
-# Label axes
+# Axis labels
 plt.xlabel(r'$\beta$')
 plt.ylabel(r"$\gamma'$", rotation=0, labelpad=16)
 
-# Save and display phase diagram
+# Save and show phase diagram
 plt.savefig(f'img/Fig6_d.pdf', bbox_inches='tight')
 plt.show()
 

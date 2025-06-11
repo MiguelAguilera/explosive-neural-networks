@@ -1,5 +1,3 @@
-# Explosive Neural Networks
-
 **Explosive Neural Networks via Higher‑Order Interactions in Curved Statistical Manifolds**
 
 This repository accompanies the paper by Aguilera et al. (2025), presenting a novel class of associative memory networks with **explosive memory-retrieval transitions**, enabled by **higher-order interactions** and **curved statistical geometry**.

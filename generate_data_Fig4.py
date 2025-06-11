@@ -34,7 +34,7 @@ dt2=0.04
 dt3=0.01
 
 # Overwrite files if already calculated
-overwrite = True
+overwrite = False
 
 
 # Main function to compute order parameters using mean-field iteration

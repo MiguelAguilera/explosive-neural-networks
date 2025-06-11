@@ -6,7 +6,7 @@ import numpy as np
 import os
 from matplotlib import pyplot as plt
 import numba
-from numba import njit
+from numba import njit, prange
 
 # Configure LaTeX-style plotting
 plt.rc('text', usetex=True)
@@ -114,7 +114,7 @@ def SequentialGlauberStep(s, H, J, beta, gamma, xi, T):
     return s
 
 
-@njit(parallel=True)
+@njit
 def calculate_overlap(gamma, beta, M, xi0, inds_cifar):
     """
     Computes the memory retrieval overlap for a given gamma, beta, and memory size M.
@@ -159,25 +159,30 @@ data = np.load('data/cifar-patterns-200.npz')
 xi0 = data['xi']
 inds_cifar0 = data['inds'].astype(int)
 
-# Initialize result arrays
-ms = np.zeros((G, nM, R))  # Individual trial overlaps
-m = np.zeros((G, nM))  # Mean overlaps
-m2 = np.zeros((G, nM))  # Squared overlaps for variance
+@njit(parallel=True)
+def calculate():
+    # Initialize result arrays
+    ms = np.zeros((G, nM, R))  # Individual trial overlaps
+    m = np.zeros((G, nM))  # Mean overlaps
+    m2 = np.zeros((G, nM))  # Squared overlaps for variance
 
-# Loop over memory sizes and gamma values
-for im, M in enumerate(Ms):
-    for ig, gamma in enumerate(gammas):
-        for r in range(R):
-            gamma = np.round(gamma, 6)
-            m_ = calculate_overlap(gamma, beta, M, xi0.copy(), inds_cifar0.copy())
-            m[ig, im] += m_ / R
-            m2[ig, im] += m_ ** 2 / R
-            ms[ig, im, r] += m_
+    # Loop over memory sizes and gamma values
+    for im in prange(nM):
+        M=Ms[im]
+        for ig in range(G):
+            gamma = np.round(gammas[ig], 6)
+            for r in range(R):
+                m_ = calculate_overlap(gamma, beta, M, xi0.copy(), inds_cifar0.copy())
+                m[ig, im] += m_ / R
+                m2[ig, im] += m_ ** 2 / R
+                ms[ig, im, r] += m_
 
-        print(f"Gamma: {gamma}, Memory Fraction: {M/N:.4f}, Mean Overlap: {m[ig, im]:.4f}")
-
+            print("Gamma", gamma, "Memory Fraction", M/N, "Mean Overlap:",m[ig, im])
+    return ms, m, m2
+    
+ms, m, m2 = calculate()
 # Save results
-filename = f'data/Fig5/mem_capacity_cifar_beta={beta}_nM_{nM}_G_{G}_R_{R}.npz'
+filename = f'data/Fig5.npz'
 np.savez(filename, m=m, m2=m2, ms=ms)
 
 # ======================

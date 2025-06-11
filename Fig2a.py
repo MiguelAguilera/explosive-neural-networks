@@ -67,7 +67,7 @@ for gamma in [-0.5, -1.5]:
     plt.title(rf"$\gamma'={gamma}$", size=20)
     
     # Save figure
-    plt.savefig(f'img/Fig2_a_{gamma}.pdf', bbox_inches='tight')
+    plt.savefig(f'img/Fig2a_{gamma}.pdf', bbox_inches='tight')
 
 # Display all plots
 plt.show()

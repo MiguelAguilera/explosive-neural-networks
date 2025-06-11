@@ -1,9 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This script computes the steady-state magnetization (m) as a function of beta in a coupled system.
-The iterative process solves for equilibrium values using a dynamical update rule.
-Results are saved in a compressed numpy file and visualized in a plot.
 """
 
 import numpy as np
@@ -77,7 +73,7 @@ def calculate_m(betas):
 M = calculate_m(betas)
 
 # Save results to a compressed numpy file
-filename = 'data/Fig3_b.npz'
+filename = 'data/Fig3b.npz'
 np.savez_compressed(filename, betas=betas, m=M)
 
 # Plot results

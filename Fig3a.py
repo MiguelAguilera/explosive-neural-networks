@@ -90,7 +90,7 @@ for gamma, beta in gamma_beta_pairs:
     plt.ylabel(r'$m_2$', rotation=0)
 
     # Save figure
-    plt.savefig(f'img/Fig3_a_{str(gamma)[0:4]}_b{beta}.pdf', bbox_inches='tight')
+    plt.savefig(f'img/Fig3a_{str(gamma)[0:4]}_b{beta}.pdf', bbox_inches='tight')
 
 # Show the plot
 plt.show()

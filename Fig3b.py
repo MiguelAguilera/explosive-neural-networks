@@ -16,7 +16,7 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath,bm}')
 gamma = -1.25  # Interaction parameter
 
 # Load computed magnetization data
-filename = 'data/Fig3_b.npz'
+filename = 'data/Fig3b.npz'
 data = np.load(filename)
 betas = data['betas']  # Beta values
 m = data['m']  # Magnetization values
@@ -39,7 +39,7 @@ plt.axis([0.5, 1.6, -1.05, 1.05])
 plt.title(r"$\gamma' = 0.0$", size=20)
 plt.ylabel(r'$\bm{m}$', fontsize=18, rotation=0, labelpad=16)
 plt.xlabel(r'$\beta$', fontsize=18)
-plt.savefig('img/Fig3_b_1.pdf', bbox_inches='tight')
+plt.savefig('img/Fig3b_1.pdf', bbox_inches='tight')
 
 # Create second plot: Effective beta transformation vs magnetization
 plt.figure(figsize=(4, 3))
@@ -51,7 +51,7 @@ plt.axis([0.68, 0.9, -1.05, 1.05])
 plt.title(rf"$\gamma' = {gamma}$", size=20)
 plt.ylabel(r'$\bm{m}$', fontsize=18, rotation=0, labelpad=16)
 plt.xlabel(r'$\beta$', fontsize=18)
-plt.savefig('img/Fig3_b_2.pdf', bbox_inches='tight')
+plt.savefig('img/Fig3b_2.pdf', bbox_inches='tight')
 
 # Show plots
 plt.show()

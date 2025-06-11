@@ -68,7 +68,7 @@ plt.text(1.5, -0.9, r'M', size=20)
 plt.text(0.55, -1.62, r'Exp', size=20)
 
 # Save the figure
-plt.savefig('img/Fig2_b.pdf', bbox_inches='tight')
+plt.savefig('img/Fig2b.pdf', bbox_inches='tight')
 
 # Display the plot
 plt.show()

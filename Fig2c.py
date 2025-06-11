@@ -22,7 +22,7 @@ ax = fig.add_subplot(projection='3d')
 gamma = -1.2  # Parameter for deformation
 
 # Load precomputed magnetization data
-filename = 'data/magnetization.npz'
+filename = 'data/Fig2c.npz'
 data = np.load(filename)
 betas = data['betas']
 m = data['m']
@@ -65,7 +65,7 @@ fig.tight_layout()
 fig.subplots_adjust(top=1.4, bottom=-0.3, left=-0.0, right=0.85)
 
 # Save figure
-plt.savefig('img/Fig2_c.pdf')
+plt.savefig('img/Fig2c.pdf')
 
 # Display plot
 plt.show()

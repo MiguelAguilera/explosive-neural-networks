@@ -1,9 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This code solves the self-consistent equation for magnetization in a homogeneous explosive neural network.
-Results are computed iteratively and plotted along with their derivative.
-Final data is saved as compressed numpy files for further analysis.
 """
 
 import numpy as np
@@ -85,7 +81,7 @@ plt.subplots_adjust(wspace=0.02, hspace=0.02)
 fig.tight_layout(h_pad=0.0, w_pad=0.7, rect=[0, 0, 1, 0.975])
 
 # Save computed data
-filename = 'data/Fig2_c.npz'
+filename = 'data/Fig2c.npz'
 np.savez_compressed(filename, betas=betas, m=m)
 
 # Show the plot

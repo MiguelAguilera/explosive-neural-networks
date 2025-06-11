@@ -52,7 +52,7 @@ plt.axis([0, T * dt, 0, 1.05])
 plt.legend(loc='center right', bbox_to_anchor=(1.01, 0.37), borderpad=0.2)
 plt.xlabel(r'$t$')
 plt.ylabel(r'$m$', rotation=0, labelpad=16)
-plt.savefig('img/Fig_2_d_1.pdf', bbox_inches='tight')
+plt.savefig('img/Fig2d_1.pdf', bbox_inches='tight')
 
 # Create second figure for effective beta dynamics
 plt.figure(figsize=(4, 3))
@@ -69,7 +69,7 @@ for ind, gamma in enumerate(gammas):
 plt.axis([0, T * dt, 0.5, np.max(beta / (1 + gamma / 2 * m**2)) * 1.05])
 plt.xlabel(r'$t$')
 plt.ylabel(r"$\beta'$", rotation=0, labelpad=16)
-plt.savefig('img/Fig_2_d_2.pdf', bbox_inches='tight')
+plt.savefig('img/Fig2d_2.pdf', bbox_inches='tight')
 plt.show()
 
 ## Create phase transition plots

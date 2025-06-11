@@ -1,8 +1,5 @@
 """
 GPLv3 2025 Miguel Aguilera
-
-This script simulates a memory retrieval model using the CIFAR dataset and the Glauber algorithm.
-It explores the effect of synaptic scaling (gamma) on memory capacity.
 """
 
 import os
@@ -103,17 +100,29 @@ def replace_images(xi):
         np.random.shuffle(A)
         for a in A:
             C = np.einsum('i,ai->a', xi[a, :], xi, optimize=True) / N
-            maxC = np.sort(C)[-2]
-            if maxC > REFc:
+            C[a]=0
+            C_over_threshold = np.sum(np.abs(C)>REFc)
+
+            if C_over_threshold > 0:
+                cond = True
+                # Try a new image
                 ind = np.random.randint(M0)
                 im = image(data, ind)
                 imd = binarize(im)
-                xi[a, :] = imd.flatten()
-                im_inds[a] = ind
-                cond = True
+                new_x = imd.flatten()
+
+                # Correlation of new image with current set
+                C_new = np.einsum('i,ai->a', new_x, xi, optimize=True) / N
+                C_new[a]=0
+                C_new_over_threshold = np.sum(np.abs(C_new)>REFc)
+
+                # Accept only if new image is better
+                if C_new_over_threshold <= C_over_threshold:
+                    xi[a, :] = new_x
+                    im_inds[a] = ind
                 count += 1
         r += 1
-        print(f"Iteration {r}, replaced {count} images.")
+        print(f"Iteration {r}, {count} large-correlation images remaining.")
     return xi
     
 xi = replace_images(xi)

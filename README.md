@@ -2,6 +2,10 @@
 
 This repository accompanies the paper by Aguilera et al. (2025), presenting a novel class of associative memory networks with **explosive memory-retrieval transitions**, enabled by **higher-order interactions** and **curved statistical geometry**.
 
+Dataset DOI:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
+
+
 ## Overview
 
 This codebase supports the generation and visualization of results from the paper. The models:

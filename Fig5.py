@@ -14,10 +14,10 @@ plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 # === Parameters (must match saved data) ===
 beta = 2
-nM = 14
 G = 41
 N = 32 * 32 * 3  # Image size
 Ms = np.arange(1, 15) * 5
+nM=len(Ms)
 gammas = -np.linspace(-1, 1, G)
 
 # === Load data ===
@@ -27,34 +27,36 @@ m = data['m']
 m2 = data['m2']
 
 # === Plot: Mean Overlap ===
-plt.figure()
+plt.figure(figsize=(6, 4),layout='constrained')
 plt.imshow(
     m,
     extent=[Ms[0] / N, Ms[-1] / N, gammas[0], gammas[-1]],
     aspect='auto',
     interpolation='none',
-    origin='lower'
+    origin='lower',
+    cmap='inferno_r'
 )
-plt.xlabel('Memory Load $M/N$')
-plt.ylabel(r'Scaling Parameter $\gamma$')
-plt.colorbar(label='Mean Overlap')
-plt.title('Mean Overlap vs $M/N$ and $\gamma$')
-plt.tight_layout()
+plt.colorbar()
+plt.ylabel(r"$\gamma'$",rotation=0, labelpad=16)
+plt.xlabel(r'$\alpha$')
+plt.title(r'$m=\langle o\rangle$',pad=8)
+plt.savefig('img/memory-capacity-cifar.pdf', dpi=300)
 
 # === Plot: Overlap Variance ===
-plt.figure()
+plt.figure(figsize=(6, 4),layout='constrained')
 plt.imshow(
     m2 - m ** 2,
     extent=[Ms[0] / N, Ms[-1] / N, gammas[0], gammas[-1]],
     aspect='auto',
     interpolation='none',
-    origin='lower'
+    origin='lower',
+    cmap='inferno_r'
 )
-plt.xlabel('Memory Load $M/N$')
-plt.ylabel(r'Scaling Parameter $\gamma$')
-plt.colorbar(label='Overlap Variance')
-plt.title('Variance of Overlap')
-plt.tight_layout()
+plt.colorbar()
+plt.ylabel(r"$\gamma'$",rotation=0, labelpad=16)
+plt.xlabel(r'$\alpha$')
+plt.title(r'$\langle o^2\rangle - \langle o\rangle^2$',pad=8)
+plt.savefig('img/spurious-memories-cifar.pdf', dpi=300)
 
 plt.show()
 

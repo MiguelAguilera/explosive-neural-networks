@@ -37,7 +37,7 @@ B = 10001
 # Coupling constant (used in the Hamiltonian or dynamics)
 J = 1
 
-# Nonlinearity parameters for two models or conditions
+# Nonlinearity parameters for two conditions
 gamma = -0.8
 gamma2 = 0.8
 
